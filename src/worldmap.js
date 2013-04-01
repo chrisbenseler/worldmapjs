@@ -24,27 +24,27 @@ var WorldMap = function() {
 			var paper = new Raphael(document.getElementById("canvas_container"), 1200, 600);
 			var border_color = "#000000";
 			var unselected_color = "#CC0000";
-			$.each(data, function(country, val) {
-				var country_obj = new Country(country);
+			$.each(data, function(region, val) {
+				var region_obj = new WorldMap.Region(region);
 				var line, path;
 				for (var i=0, l=val.length;i<l;i++) {
 
 					line = paper.path(val[i]);
 					line.attr({stroke:options.colors.borders.normal,'stroke-width':1,'fill':options.colors.fills.normal});
-					line.country=country;
+					line.region=region;
 
 					$(line.node)
-					.mousemove(function(country_obj) {
-						countries[country].colorize(options);
+					.mousemove(function(region_obj) {
+						countries[region].colorize(options);
 					})
 					.mouseout(function() {
-						countries[country].uncolorize(options);
+						countries[region].uncolorize(options);
 					});
 
-					country_obj.borders.push(line);
+					region_obj.borders.push(line);
 				}
 
-				countries[country] = country_obj;
+				countries[region] = region_obj;
 			});
 		});
 	};
@@ -56,7 +56,7 @@ var WorldMap = function() {
 };
 
 
-var Country = function(name) {
+WorldMap.Region = function(name) {
 	this.name = name;
 	this.borders = [];
 
@@ -75,4 +75,4 @@ var Country = function(name) {
 	};
 
 	return this;
-}
+};
