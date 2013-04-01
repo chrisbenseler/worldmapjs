@@ -1,8 +1,9 @@
 
-var WorldMap = function() {
+var WorldMap = function(custom_options) {
 
 	var countries = {};
 
+	//default options
 	var options = {
 		colors: {
 			borders : {
@@ -13,20 +14,25 @@ var WorldMap = function() {
 				normal : "#AAAAAA",
 				hover : "#DDDDDD"
 			}
-		}
+		},
+		data_path : "data/world_svg_paths_by_code.json"
 	};
+
+	//override default options with custom
+	for(var key in custom_options) {
+		if(options.hasOwnProperty(key)) {
+			options[key] = custom_options[key];
+		}
+	}
 
 	var get_paths = function() {
 		$
-		.when( $.getJSON("data/world_svg_paths_by_code.json") )
+		.when( $.getJSON(options.data_path) )
 		.done( function(data) {
 			
 			var paper = new Raphael(document.getElementById("canvas_container"), 1200, 600);
-			var border_color = "#000000";
-			var unselected_color = "#CC0000";
 			$.each(data, function(region, val) {
-				var region_obj = new WorldMap.Region(region);
-				var line, path;
+				var region_obj = new WorldMap.Region(region), line, path;
 				for (var i=0, l=val.length;i<l;i++) {
 
 					line = paper.path(val[i]);
@@ -57,6 +63,7 @@ var WorldMap = function() {
 
 
 WorldMap.Region = function(name) {
+
 	this.name = name;
 	this.borders = [];
 
