@@ -1,6 +1,9 @@
 
-var WorldMap = function() {
+var WorldMap = function(custom_options) {
 
+	var countries = {};
+
+	//default options
 	var options = {
 		colors: {
 			borders : {
@@ -11,64 +14,72 @@ var WorldMap = function() {
 				normal : "#AAAAAA",
 				hover : "#DDDDDD"
 			}
+		},
+		data_path : "data/world_svg_paths_by_code.json"
+	};
+
+	//override default options with custom
+	for(var key in custom_options) {
+		if(options.hasOwnProperty(key)) {
+			options[key] = custom_options[key];
 		}
-	}
-
-	var svg_borders = {};
-	var color_country = function(country) {
-		var i, l;
-		if (svg_borders.hasOwnProperty(country))
-			for (i=0, l= svg_borders[country].length;i<l;i++) {
-				svg_borders[country][i].animate({"fill":options.colors.fills.hover,"stroke":options.colors.borders.hover,"stroke-width":2},333);
-			}
-	}
-
-	var reset_country = function(country) {
-		var i, l;
-		if (svg_borders.hasOwnProperty(country))
-			for (i=0, l= svg_borders[country].length;i<l;i++) {
-				svg_borders[country][i].animate({"fill":options.colors.fills.normal,"stroke":options.colors.borders.normal,"stroke-width":1},333);
-			}
 	}
 
 	var get_paths = function() {
 		$
-		.when( $.getJSON("data/world_svg_paths_by_code.json") )
+		.when( $.getJSON(options.data_path) )
 		.done( function(data) {
 			
 			var paper = new Raphael(document.getElementById("canvas_container"), 1200, 600);
-			var border_color = "#000000";
-			var unselected_color = "#CC0000";
-			$.each(data, function(country, val) {
-				svg_borders[country]=[];
-				var line, i, path;
+			$.each(data, function(region, val) {
+				var region_obj = new WorldMap.Region(region), line, path;
 				for (var i=0, l=val.length;i<l;i++) {
-					line = paper.path(val[i]);
-					//line.attr({stroke:border_color,'stroke-width':1,'fill':unselected_color});
 
+					line = paper.path(val[i]);
 					line.attr({stroke:options.colors.borders.normal,'stroke-width':1,'fill':options.colors.fills.normal});
-					line.country=country;
-					//$(line.node).click( get_click_handler(country));
-					//$(line.node).mousemove( get_over_handler(country));
-					//$(line.node).mouseout( get_out_handler(country));
+					line.region=region;
 
 					$(line.node)
-					.mousemove(function() {
-						color_country(country);
+					.mousemove(function(region_obj) {
+						countries[region].colorize(options);
 					})
 					.mouseout(function() {
-						reset_country(country);
+						countries[region].uncolorize(options);
 					});
 
-					svg_borders[country].push(line);
+					region_obj.borders.push(line);
 				}
+
+				countries[region] = region_obj;
 			});
-			//alert(svg_borders.toSource())
 		});
-	}
+	};
 
 	get_paths();
 
 	return this;
 
-}
+};
+
+
+WorldMap.Region = function(name) {
+
+	this.name = name;
+	this.borders = [];
+
+	this.colorize = function(options) {
+		var country = this;
+		for (var i=0, l = country.borders.length;i<l;i++) {
+			country.borders[i].animate({"fill":options.colors.fills.hover,"stroke":options.colors.borders.hover,"stroke-width":2},333);
+		}
+	};
+
+	this.uncolorize = function(options) {
+		var country = this;
+		for (var i=0, l = country.borders.length;i<l;i++) {
+			country.borders[i].animate({"fill":options.colors.fills.normal,"stroke":options.colors.borders.normal,"stroke-width":1},333);
+		}
+	};
+
+	return this;
+};
