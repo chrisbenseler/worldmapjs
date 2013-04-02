@@ -1,5 +1,6 @@
-
+/*global $:false, Raphael:false */
 var WorldMap = function(custom_options) {
+	"use strict";
 
 	var countries = {};
 
@@ -30,25 +31,27 @@ var WorldMap = function(custom_options) {
 		.when( $.getJSON(options.data_path) )
 		.done( function(data) {
 			
-			var paper = new Raphael(document.getElementById("canvas_container"), 1200, 600);
+			var paper = new Raphael($("#canvas_container")[0], "100%", 600);
 			$.each(data, function(region, val) {
-				var region_obj = new WorldMap.Region(region), line, path;
-				for (var i=0, l=val.length;i<l;i++) {
+				var region_obj = new WorldMap.Region(region), line;
 
+				for (var i=0, l=val.length;i<l;i++) {
 					line = paper.path(val[i]);
 					line.attr({stroke:options.colors.borders.normal,'stroke-width':1,'fill':options.colors.fills.normal});
 					line.region=region;
-
-					$(line.node)
-					.mousemove(function(region_obj) {
-						countries[region].colorize(options);
-					})
-					.mouseout(function() {
-						countries[region].uncolorize(options);
-					});
-
 					region_obj.borders.push(line);
 				}
+
+				$(region_obj.borders).each(function(index, value) {
+					var line = value;
+					$(line.node)
+					.mousemove(function() {
+						region_obj.colorize(options);
+					})
+					.mouseout(function() {
+						region_obj.uncolorize(options);
+					});
+				});
 
 				countries[region] = region_obj;
 			});
@@ -56,6 +59,9 @@ var WorldMap = function(custom_options) {
 	};
 
 	get_paths();
+
+	//reveal method
+	this.options = options;
 
 	return this;
 
