@@ -60,6 +60,9 @@ var WorldMap = function(custom_options) {
 
 	get_paths();
 
+	//reveal method
+	this.options = options;
+
 	return this;
 
 };
