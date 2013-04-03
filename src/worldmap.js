@@ -2,7 +2,7 @@
 var WorldMap = function(custom_options) {
 	"use strict";
 
-	var countries = {};
+	var regions = {};
 
 	//default options
 	var options = {
@@ -34,34 +34,46 @@ var WorldMap = function(custom_options) {
 			var paper = new Raphael($("#canvas_container")[0], "100%", 600);
 			$.each(data, function(region, val) {
 				var region_obj = new WorldMap.Region(region), line;
+				regions[region] = region_obj;
 
 				for (var i=0, l=val.length;i<l;i++) {
 					line = paper.path(val[i]);
-					line.attr({stroke:options.colors.borders.normal,'stroke-width':1,'fill':options.colors.fills.normal});
 					line.region=region;
 					region_obj.borders.push(line);
 				}
 
-				$(region_obj.borders).each(function(index, value) {
-					var line = value;
-					$(line.node)
-					.mousemove(function() {
-						region_obj.colorize(options);
-					})
-					.mouseout(function() {
-						region_obj.uncolorize(options);
-					});
-				});
+				update_region(region, options);
 
-				countries[region] = region_obj;
 			});
 		});
 	};
 
 	get_paths();
 
-	//reveal method
+	
+	var update_region = function(key, options) {
+		if(regions[key]!==undefined) {
+			if(options.colors!==null) {
+				$(regions[key].borders).each(function(index, value) {
+					var line = value;
+					line.attr({stroke:options.colors.borders.normal,'stroke-width':1,'fill':options.colors.fills.normal});
+					$(line.node)
+					.mousemove(function() {
+						regions[key].colorize(options);
+					})
+					.mouseout(function() {
+						regions[key].uncolorize(options);
+					});
+
+				});
+			}
+		}
+	};
+
+	//reveal values & methods
 	this.options = options;
+	this.update_region = update_region;
+
 
 	return this;
 
@@ -74,16 +86,16 @@ WorldMap.Region = function(name) {
 	this.borders = [];
 
 	this.colorize = function(options) {
-		var country = this;
-		for (var i=0, l = country.borders.length;i<l;i++) {
-			country.borders[i].animate({"fill":options.colors.fills.hover,"stroke":options.colors.borders.hover,"stroke-width":2},333);
+		var region = this;
+		for (var i=0, l = region.borders.length;i<l;i++) {
+			region.borders[i].animate({"fill":options.colors.fills.hover,"stroke":options.colors.borders.hover,"stroke-width":2},333);
 		}
 	};
 
 	this.uncolorize = function(options) {
-		var country = this;
-		for (var i=0, l = country.borders.length;i<l;i++) {
-			country.borders[i].animate({"fill":options.colors.fills.normal,"stroke":options.colors.borders.normal,"stroke-width":1},333);
+		var region = this;
+		for (var i=0, l = region.borders.length;i<l;i++) {
+			region.borders[i].animate({"fill":options.colors.fills.normal,"stroke":options.colors.borders.normal,"stroke-width":1},333);
 		}
 	};
 

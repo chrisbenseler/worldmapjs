@@ -7,6 +7,25 @@
 	<script>
 	$(document).ready(function() {
 		var map = new WorldMap();
+
+		//example to set different colors to a specific region
+		/*
+		setTimeout(function() {
+			map.update_region("BRA", {
+				colors: {
+					borders : {
+						normal : "#00FF00",
+						hover : "#CC0000"
+					},
+					fills : {
+						normal : "#DADADA",
+						hover : "#DDDDDD"
+					}
+				}
+			});
+		}, 1000);
+	*/
+		
 	});
 	</script>
 </head>
