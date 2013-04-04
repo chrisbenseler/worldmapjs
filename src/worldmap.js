@@ -64,11 +64,14 @@ var WorldMap = function(custom_options) {
 					.mouseout(function() {
 						regions[key].uncolorize(options);
 					});
-
 				});
 			}
 		}
 	};
+
+	this.get_region = function(key) {
+		return regions[key] || null;
+	}
 
 	//reveal values & methods
 	this.options = options;
@@ -97,6 +100,15 @@ WorldMap.Region = function(name) {
 		for (var i=0, l = region.borders.length;i<l;i++) {
 			region.borders[i].animate({"fill":options.colors.fills.normal,"stroke":options.colors.borders.normal,"stroke-width":1},333);
 		}
+	};
+
+	this.on_over = function(cb) {
+		var region = this, line = null;
+		$(region.borders).each(function(index, value) {
+			line = value;
+			//$(line.node)
+			//	.on("mousemove.worldmap", cb.call(this))	
+		});
 	};
 
 	return this;
