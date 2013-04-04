@@ -16,7 +16,7 @@ var WorldMap = function(custom_options) {
 				hover : "#DDDDDD"
 			}
 		},
-		data_path : "data/world_svg_paths_by_code.json"
+		data_path : "../data/world_svg_paths_by_code.json"
 	};
 
 	//override default options with custom
