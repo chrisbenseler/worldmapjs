@@ -71,7 +71,7 @@ var WorldMap = function(custom_options) {
 
 	this.get_region = function(key) {
 		return regions[key] || null;
-	}
+	};
 
 	//reveal values & methods
 	this.options = options;
@@ -103,11 +103,20 @@ WorldMap.Region = function(name) {
 	};
 
 	this.on_over = function(cb) {
-		var region = this, line = null;
+		var region = this;
 		$(region.borders).each(function(index, value) {
-			line = value;
-			//$(line.node)
-			//	.on("mousemove.worldmap", cb.call(this))	
+			$(value.node)
+			.on("mouseover.worldmap", function() {
+				cb.call(this, region);
+			});
+		});
+	};
+
+	this.off_over = function() {
+		var region = this;
+		$(region.borders).each(function(index, value) {
+			$(value.node)
+			.off("mouseover.worldmap");
 		});
 	};
 
