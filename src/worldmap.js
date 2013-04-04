@@ -16,7 +16,7 @@ var WorldMap = function(custom_options) {
 				hover : "#DDDDDD"
 			}
 		},
-		data_path : "data/world_svg_paths_by_code.json"
+		data_path : "../data/world_svg_paths_by_code.json"
 	};
 
 	//override default options with custom
@@ -64,10 +64,13 @@ var WorldMap = function(custom_options) {
 					.mouseout(function() {
 						regions[key].uncolorize(options);
 					});
-
 				});
 			}
 		}
+	};
+
+	this.get_region = function(key) {
+		return regions[key] || null;
 	};
 
 	//reveal values & methods
@@ -97,6 +100,24 @@ WorldMap.Region = function(name) {
 		for (var i=0, l = region.borders.length;i<l;i++) {
 			region.borders[i].animate({"fill":options.colors.fills.normal,"stroke":options.colors.borders.normal,"stroke-width":1},333);
 		}
+	};
+
+	this.on_over = function(cb) {
+		var region = this;
+		$(region.borders).each(function(index, value) {
+			$(value.node)
+			.on("mouseover.worldmap", function() {
+				cb.call(this, region);
+			});
+		});
+	};
+
+	this.off_over = function() {
+		var region = this;
+		$(region.borders).each(function(index, value) {
+			$(value.node)
+			.off("mouseover.worldmap");
+		});
 	};
 
 	return this;
