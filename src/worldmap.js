@@ -102,21 +102,21 @@ WorldMap.Region = function(name) {
 		}
 	};
 
-	this.on_over = function(cb) {
+	this.on = function(event_name, cb) {
 		var region = this;
 		$(region.borders).each(function(index, value) {
 			$(value.node)
-			.on("mouseover.worldmap", function() {
+			.on(event_name + ".worldmap", function() {
 				cb.call(this, region);
 			});
 		});
 	};
 
-	this.off_over = function() {
+	this.off = function(event_name) {
 		var region = this;
 		$(region.borders).each(function(index, value) {
 			$(value.node)
-			.off("mouseover.worldmap");
+			.off(event_name + ".worldmap");
 		});
 	};
 
