@@ -16,7 +16,8 @@ var WorldMap = function(custom_options) {
 				hover : "#DDDDDD"
 			}
 		},
-		data_path : "../data/world_svg_paths_by_code.json"
+		data_path : "../data/world_svg_paths_by_code.json",
+		container : null
 	};
 
 	//override default options with custom
@@ -27,11 +28,15 @@ var WorldMap = function(custom_options) {
 	}
 
 	var get_paths = function() {
+		if(options.container == null) {
+			throw "No container for map defined";
+		}
+
 		$
 		.when( $.getJSON(options.data_path) )
 		.done( function(data) {
 			
-			var paper = new Raphael($("#canvas_container")[0], "100%", 600);
+			var paper = new Raphael(options.container[0]);
 			$.each(data, function(region, val) {
 				var region_obj = new WorldMap.Region(region), line;
 				regions[region] = region_obj;
@@ -102,21 +107,21 @@ WorldMap.Region = function(name) {
 		}
 	};
 
-	this.on_over = function(cb) {
+	this.on = function(event_name, cb) {
 		var region = this;
 		$(region.borders).each(function(index, value) {
 			$(value.node)
-			.on("mouseover.worldmap", function() {
+			.on(event_name + ".worldmap", function() {
 				cb.call(this, region);
 			});
 		});
 	};
 
-	this.off_over = function() {
+	this.off = function(event_name) {
 		var region = this;
 		$(region.borders).each(function(index, value) {
 			$(value.node)
-			.off("mouseover.worldmap");
+			.off(event_name + ".worldmap");
 		});
 	};
 

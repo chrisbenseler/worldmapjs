@@ -1,12 +1,21 @@
 <html>
 <head>
 	<title>World Map</title>
+	<style>
+		svg {
+			height: 600px;
+			width: 100%;
+		}
+	</style>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="../lib/raphael.js"></script>
 	<script src="../src/worldmap.js"></script>
 	<script>
 	$(document).ready(function() {
-		var map = new WorldMap();
+		var map = new WorldMap({
+			container: $("#canvas_container")
+		});
+
 
 		//example to set different colors to a specific region
 		/*
@@ -26,14 +35,16 @@
 		}, 1000);
 		*/
 
-		
+		//example to set a custom over event for a region
+		/*
 		setTimeout(function() {
 			var r = map.get_region("BRA");
-			r.on_over(function() {
+			r.on("mouseover", function() {
 				console.log("custom over event");
 			});
 			
-		}, 1000);
+		}, 10000);
+		*/
 		
 		
 	});
