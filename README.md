@@ -1,3 +1,6 @@
+
+[![Build Status](https://travis-ci.org/chrisbenseler/worldmapjs.png)](https://travis-ci.org/chrisbenseler/worldmapjs)
+
 worldmapjs
 ==========
 

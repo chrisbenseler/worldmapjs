@@ -44,4 +44,7 @@ module.exports = function(grunt) {
   // Default task.
   grunt.registerTask('default', ['jshint', 'qunit','uglify']);
 
+  //Travis CI task
+  grunt.registerTask('test', ['qunit']);
+
 };
