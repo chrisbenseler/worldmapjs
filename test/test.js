@@ -1,3 +1,5 @@
+/*global $:false, WorldMap:false */
+
 "use strict";
 
 test("create map", function() {
@@ -37,7 +39,7 @@ asyncTest("set custom colors", function() {
 				normal : "#DADADA",
 				hover : "#DDDDDD"
 			}
-		}
+		};
 		global_map.update_region("BRA", {colors : colors});
 		console.log(global_map.get_region("BRA").borders[0].attrs);
 		ok(global_map.get_region("BRA").borders[0].attrs.stroke===colors.borders.normal);
